@@ -1,0 +1,60 @@
+**Query #1**
+
+    /* Using this dataset, show the SQL query to find the rolling 3 day average transaction amount for each day in January 2021. */
+    
+    /* Using this dataset, show the SQL query to find the rolling 3 day average transaction amount for each day in January 2021. */
+    
+    WITH DailyCounts AS (
+        SELECT 
+            CAST(tr.transaction_time AS DATE) AS transaction_date,
+            COUNT(tr.transaction_amount) AS transaction_count
+        FROM transactions AS tr
+        GROUP BY CAST(tr.transaction_time AS DATE)
+    )
+    SELECT 
+        transaction_date,
+        transaction_count,
+        AVG(transaction_count) OVER (
+            ORDER BY transaction_date
+            ROWS BETWEEN 3 PRECEDING AND CURRENT ROW
+        ) AS rolling_avg
+    FROM DailyCounts
+    ORDER BY transaction_date;
+
+| transaction_date | transaction_count | rolling_avg        |
+| ---------------- | ----------------- | ------------------ |
+| 2021-01-01       | 3                 | 3.0000000000000000 |
+| 2021-01-02       | 3                 | 3.0000000000000000 |
+| 2021-01-03       | 3                 | 3.0000000000000000 |
+| 2021-01-04       | 4                 | 3.2500000000000000 |
+| 2021-01-05       | 4                 | 3.5000000000000000 |
+| 2021-01-06       | 4                 | 3.7500000000000000 |
+| 2021-01-07       | 4                 | 4.0000000000000000 |
+| 2021-01-08       | 4                 | 4.0000000000000000 |
+| 2021-01-09       | 3                 | 3.7500000000000000 |
+| 2021-01-10       | 3                 | 3.5000000000000000 |
+| 2021-01-11       | 4                 | 3.5000000000000000 |
+| 2021-01-12       | 4                 | 3.5000000000000000 |
+| 2021-01-13       | 4                 | 3.7500000000000000 |
+| 2021-01-14       | 4                 | 4.0000000000000000 |
+| 2021-01-15       | 4                 | 4.0000000000000000 |
+| 2021-01-16       | 3                 | 3.7500000000000000 |
+| 2021-01-17       | 3                 | 3.5000000000000000 |
+| 2021-01-18       | 4                 | 3.5000000000000000 |
+| 2021-01-19       | 4                 | 3.5000000000000000 |
+| 2021-01-20       | 4                 | 3.7500000000000000 |
+| 2021-01-21       | 5                 | 4.2500000000000000 |
+| 2021-01-22       | 4                 | 4.2500000000000000 |
+| 2021-01-23       | 3                 | 4.0000000000000000 |
+| 2021-01-24       | 3                 | 3.7500000000000000 |
+| 2021-01-25       | 4                 | 3.5000000000000000 |
+| 2021-01-26       | 4                 | 3.5000000000000000 |
+| 2021-01-27       | 4                 | 3.7500000000000000 |
+| 2021-01-28       | 4                 | 4.0000000000000000 |
+| 2021-01-29       | 4                 | 4.0000000000000000 |
+| 2021-01-30       | 3                 | 3.7500000000000000 |
+| 2021-01-31       | 3                 | 3.5000000000000000 |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/f/fufVxMKne1xMNHCbFoANMo/0)
